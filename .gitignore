@@ -1,7 +1,7 @@
 tmp
 .env
 .envrc
-.migrate.exe
+migrate.exe
 swag.exe
 bin/
 
