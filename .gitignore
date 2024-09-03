@@ -1,6 +1,8 @@
 tmp
 .env
 .envrc
+.migrate.exe
+swag.exe
 bin/
 
 # Logs

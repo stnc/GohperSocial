@@ -1,7 +1,7 @@
 include .envrc
 MIGRATIONS_PATH = ./cmd/migrate/migrations
 DB_ADDR =  postgresql://postgres:changeme@localhost:5432/social?sslmode=disable
-
+GOCMD=go
 
 .PHONY: migrate-create
 migration:
@@ -30,7 +30,7 @@ gen-docs:
 
 .PHONY: all build deps deps-cleancache
 
-GOCMD=go
+
 BUILD_DIR=build
 BINARY_DIR=$(BUILD_DIR)/bin
 CODE_COVERAGE=code-coverage

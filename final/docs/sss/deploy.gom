@@ -1,0 +1,188 @@
+//  golang gin framework mvc and clean code project
+//  Licensed under the Apache License 2.0
+//  @author Selman TUNÇ <selmantunc@gmail.com>
+//  @link: https://github.com/stnc/go-mvc-blog-clean-code
+//  @license: Apache License 2.0
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"runtime"
+	"time"
+
+	"github.com/jlaffaye/ftp"
+	"golang.org/x/crypto/ssh"
+)
+
+const (
+	InfoColor    = "\033[1;34m%s\033[0m"
+	NoticeColor  = "\033[1;36m%s\033[0m"
+	WarningColor = "\033[1;33m%s\033[0m"
+	ErrorColor   = "\033[1;31m%s\033[0m"
+	DebugColor   = "\033[0;36m%s\033[0m"
+)
+
+func main() {
+
+	fmt.Printf(NoticeColor, "Info")
+	fmt.Println("")
+	fmt.Printf(InfoColor, "-----------FTP BAĞLANTISI YAPILIYOR-------------")
+	fmt.Println("")
+	c, err := ftp.Dial("kys.kurbandefteri.com:21", ftp.DialWithTimeout(5*time.Second))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = c.Login("admin_ftpU@kys.kurbandefteri.com", "Z1HhUTEnzfTn9nau")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf(InfoColor, "-----------Main dosyası gönderiliyor  YAPILIYOR-------------")
+	fmt.Println("")
+	data, err := os.Open("main")
+	err = c.Stor("main2", data)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf(InfoColor, "-----------Static Dosyası Gönderiliyor-------------")
+	fmt.Println("")
+	data1, err1 := os.Open("CI/static.tar.gz")
+	err1 = c.Stor("static.tar.gz", data1)
+	if err1 != nil {
+		panic(err)
+	}
+
+	fmt.Printf(InfoColor, "-----------View Dosyası Gönderiliyor-------------")
+	fmt.Println("")
+	data2, err2 := os.Open("CI/view.tar.gz")
+	err2 = c.Stor("view.tar.gz", data2)
+	if err2 != nil {
+		panic(err)
+	}
+
+	fmt.Printf(InfoColor, "-----------locales Dosyası Gönderiliyor-------------")
+	fmt.Println("")
+	data3, err3 := os.Open("CI/locales.tar.gz")
+	err3 = c.Stor("locales.tar.gz", data3)
+	if err3 != nil {
+		panic(err)
+	}
+
+	// Do something with the FTP conn
+
+	if err := c.Quit(); err != nil {
+		log.Fatal(err)
+	}
+
+	sshStnc()
+
+	switch runtime.GOOS {
+	case "linux":
+		exec.Command("xdg-open", "http://kys.kurbandefteri.com/").Start()
+	case "windows", "darwin":
+		exec.Command(`C:\Windows\System32\rundll32.exe`, "url.dll,FileProtocolHandler", "http://kys.kurbandefteri.com/").Start()
+	default:
+		fmt.Errorf("unsupported platform")
+	}
+}
+
+func sshStnc() {
+
+	hostname := "140.82.31.90"
+	username := "root"
+	password := "8g%J$UR6g%juE@n9"
+
+	port := "22"
+
+	// SSH client config
+	config := &ssh.ClientConfig{
+		User: username,
+		Auth: []ssh.AuthMethod{
+			ssh.Password(password),
+		},
+		// Non-production only
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	// Connect to host
+	client, err := ssh.Dial("tcp", hostname+":"+port, config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
+	// Create sesssion
+	sess, err := client.NewSession()
+	if err != nil {
+		log.Fatal("Failed to create session: ", err)
+	}
+	defer sess.Close()
+
+	// StdinPipe for commands
+	stdin, err := sess.StdinPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Uncomment to store output in variable
+	//var b bytes.Buffer
+	//sess.Stdout = &amp;b
+	//sess.Stderr = &amp;b
+
+	// Enable system stdout
+	// Comment these if you uncomment to store in variable
+	sess.Stdout = os.Stdout
+	sess.Stderr = os.Stderr
+
+	// Start remote shell
+	err = sess.Shell()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf(InfoColor, "-----------SSh bağlantısı yapıldı -------------")
+	fmt.Println("")
+	// send the commands
+	commands := []string{
+		"pwd",
+		// "whoami",
+		"cd /home/admin/web/kys.kurbandefteri.com/public_html",
+		"rm -rf main",
+		"rm -rf public/view/",
+		"rm -rf public/static/",
+		"rm -rf public/locales/",
+		"tar -xvf static.tar.gz",
+		"tar -xvf view.tar.gz",
+		"tar -xvf locales.tar.gz",
+		"mv main2 main",
+		"chmod +rwx main",
+		"rm -rf static.tar.gz",
+		"rm -rf view.tar.gz",
+		"rm -rf locales.tar.gz",
+		"service gowebv2.service restart",
+		"echo 'islem tamamdır bye'",
+		"exit",
+	}
+
+	for _, cmd := range commands {
+		_, err = fmt.Fprintf(stdin, "%s\n", cmd)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	// Wait for sess to finish
+	err = sess.Wait()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf(InfoColor, "-----------SSh bağlantısı kapatıldı -------------")
+	fmt.Println("")
+	// Uncomment to store in variable
+	//fmt.Println(b.String())
+}
