@@ -1,1 +1,1 @@
- feat: filtering and searching 
+ feat: stuctured logging 
