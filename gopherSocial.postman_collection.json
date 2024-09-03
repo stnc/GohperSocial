@@ -131,7 +131,43 @@
 			"response": []
 		},
 		{
+			"name": "update data",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"title\":\"utah\", \"content\":\"lorenm upsum\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/posts/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"posts",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "get post",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"auth": {
 					"type": "basic",
@@ -148,7 +184,7 @@
 						}
 					]
 				},
-				"method": "POST",
+				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -160,7 +196,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/v1/posts",
+					"raw": "http://localhost:8080/v1/posts/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -168,7 +204,56 @@
 					"port": "8080",
 					"path": [
 						"v1",
-						"posts"
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete post",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "ss",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "ss",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"title\":\"John\", \"content\":\"30\", \"tags\":[\"Yoga\",\"Gardening\"]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/posts/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"posts",
+						"1"
 					]
 				}
 			},
@@ -196,7 +281,7 @@
 			"response": []
 		},
 		{
-			"name": "get user follow for 1 Copy",
+			"name": "/users/{userID}/follow",
 			"request": {
 				"method": "GET",
 				"header": [],
