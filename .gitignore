@@ -3,6 +3,8 @@ tmp
 .envrc
 migrate.exe
 swag.exe
+air.exe
+final.zip
 bin/
 
 # Logs
