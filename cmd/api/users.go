@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -47,10 +46,11 @@ type FollowUser struct {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			userID	path		int		true	"User ID"
-//	@Success		204		{string}	string	"User followed"
-//	@Failure		400		{object}	error	"User payload missing"
-//	@Failure		404		{object}	error	"User not found"
+//	@Param			userID	path		int			true	"User ID"
+//	@Success		204		{string}	string		"User followed"
+//	@Param			payload	body		FollowUser	true	"Post payload"
+//	@Failure		400		{object}	error		"User payload missing"
+//	@Failure		404		{object}	error		"User not found"
 //	@Security		ApiKeyAuth
 //	@Router			/users/{userID}/follow [put]
 func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -88,10 +88,11 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			userID	path		int		true	"User ID"
-//	@Success		204		{string}	string	"User unfollowed"
-//	@Failure		400		{object}	error	"User payload missing"
-//	@Failure		404		{object}	error	"User not found"
+//	@Param			userID	path		int			true	"User ID"
+//	@Param			payload	body		FollowUser	true	"Post payload"
+//	@Success		204		{string}	string		"User unfollowed"
+//	@Failure		400		{object}	error		"User payload missing"
+//	@Failure		404		{object}	error		"User not found"
 //	@Security		ApiKeyAuth
 //	@Router			/users/{userID}/unfollow [put]
 func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -150,7 +151,6 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 func (app *application) userContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		userID, err := strconv.ParseInt(chi.URLParam(r, "userID"), 10, 64)
-		fmt.Println(userID)
 		if err != nil {
 			app.badRequestResponse(w, r, err)
 			return

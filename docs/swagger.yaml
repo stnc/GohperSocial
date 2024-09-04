@@ -16,6 +16,11 @@ definitions:
     - content
     - title
     type: object
+  main.FollowUser:
+    properties:
+      user_id:
+        type: integer
+    type: object
   main.RegisterUserPayload:
     properties:
       email:
@@ -339,6 +344,12 @@ paths:
         name: userID
         required: true
         type: integer
+      - description: Post payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/main.FollowUser'
       produces:
       - application/json
       responses:
@@ -368,6 +379,12 @@ paths:
         name: userID
         required: true
         type: integer
+      - description: Post payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/main.FollowUser'
       produces:
       - application/json
       responses:
