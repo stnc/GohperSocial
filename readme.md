@@ -11,3 +11,5 @@ feat: email sending
         "token": "4f953182-7da2-4496-8d45-3426bdedebfd"
     }
 }
+
+https://github.com/wailsapp/wails/blob/master/v2/cmd/wails/main.go
