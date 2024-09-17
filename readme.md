@@ -13,3 +13,6 @@ feat: email sending
 }
 
 https://github.com/wailsapp/wails/blob/master/v2/cmd/wails/main.go
+
+
+https://github.com/tucows/gripmock
